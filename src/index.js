@@ -1,5 +1,6 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
+var _ = require('lodash');
 // Descris în documentație
 import SimpleLightbox from 'simplelightbox';
 // Import suplimentar de stil
@@ -17,6 +18,10 @@ const galleryContainer = document.querySelector('.gallery');
 // console.log(galleryContainer);
 
 const searchBtn = document.querySelector('button');
+
+const loader = document.querySelector('.loader');
+loader.style.visibility = 'hidden';
+// console.log(loader);
 
 const loadMoreBtn = document.querySelector('.load-more');
 loadMoreBtn.disabled = true;
@@ -116,8 +121,9 @@ searchBtn.addEventListener('click', ev => {
           Notiflix.Notify.failure(
             'Sorry, there are no images matching your search query. Please try again.'
           );
-          loadMoreBtn.disabled = true;
-          loadMoreBtn.style.visibility = 'hidden';
+          // loadMoreBtn.disabled = true;
+          // loadMoreBtn.style.visibility = 'hidden';
+          loader.style.visibility = 'hidden';
         } else {
           Notiflix.Notify.success(
             `Hooray! We found ${result.data.totalHits} images.`
@@ -127,8 +133,10 @@ searchBtn.addEventListener('click', ev => {
           allImages.map(img => {
             renderImages(img);
           });
-          loadMoreBtn.style.visibility = 'visible';
-          loadMoreBtn.disabled = false;
+          // loadMoreBtn.style.visibility = 'visible';
+          // loadMoreBtn.disabled = false;
+          loader.style.visibility = 'visible';
+
           console.log(result.data.totalHits);
           console.log(allImages);
           console.log(galleryContainer);
@@ -165,69 +173,147 @@ searchBtn.addEventListener('click', ev => {
   fetchGaleryImages();
 });
 
-loadMoreBtn.addEventListener('click', ev => {
-  page++;
-  galleryContainer.innerHTML = null;
+// loadMoreBtn.addEventListener('click', ev => {
+//   page++;
+//   galleryContainer.innerHTML = null;
 
-  const axiosOptions = {
-    params: {
-      key: apiKey,
-      q: searchText,
-      image_type: 'photo',
-      page: page,
-      per_page: perPageItems,
-      orientation: 'horizontal',
-      safesearch: true,
-    },
-  };
+//   const axiosOptions = {
+//     params: {
+//       key: apiKey,
+//       q: searchText,
+//       image_type: 'photo',
+//       page: page,
+//       per_page: perPageItems,
+//       orientation: 'horizontal',
+//       safesearch: true,
+//     },
+//   };
 
-  function fetchGaleryImages() {
-    axios
-      .get(`${API_URL_BASE}`, axiosOptions)
-      .then(result => {
-        const allImages = result.data.hits;
-        allImages.map(img => {
-          renderImages(img);
-        });
-        loadMoreBtn.style.visibility = 'visible';
-        loadMoreBtn.disabled = false;
+//   function fetchGaleryImages() {
+//     axios
+//       .get(`${API_URL_BASE}`, axiosOptions)
+//       .then(result => {
+//         const allImages = result.data.hits;
+//         allImages.map(img => {
+//           renderImages(img);
+//         });
+//         loadMoreBtn.style.visibility = 'visible';
+//         loadMoreBtn.disabled = false;
 
-        // console.log(allImages);
-        if (allImages.length === 0) {
-          Notiflix.Notify.info(
-            "We're sorry, but you've reached the end of search results."
-          );
-          loadMoreBtn.style.visibility = 'hidden';
-          loadMoreBtn.disabled = true;
-        }
-        // getting the gallery"link" array by  selector
-        const link = document.querySelectorAll('a');
-        // console.log(link.length);
+//         // console.log(allImages);
+//         if (allImages.length === 0) {
+//           Notiflix.Notify.info(
+//             "We're sorry, but you've reached the end of search results."
+//           );
+//           loadMoreBtn.style.visibility = 'hidden';
+//           loadMoreBtn.disabled = true;
+//         }
+//         // getting the gallery"link" array by  selector
+//         const link = document.querySelectorAll('a');
+//         // console.log(link.length);
 
-        // getting each link and adding click event on each link
-        link.forEach(element => {
-          const elementImage = element.querySelector('img');
-          // console.log(elementImage.src);
-          // console.log(element.href);
+//         // getting each link and adding click event on each link
+//         link.forEach(element => {
+//           const elementImage = element.querySelector('img');
+//           // console.log(elementImage.src);
+//           // console.log(element.href);
 
-          element.addEventListener('click', ev => {
-            //   preventing link natural action
-            ev.preventDefault();
+//           element.addEventListener('click', ev => {
+//             //   preventing link natural action
+//             ev.preventDefault();
 
-            // changing the src image path on click event
-            elementImage.src = element.href;
+//             // changing the src image path on click event
+//             elementImage.src = element.href;
 
-            // setting the modal window gallery using the SimpleLightbox library and adding "alt" caption title on bottom with 250 ms delay
-            let gallery = new SimpleLightbox(`.gallery a`, {
-              captionsData: 'alt',
-              captionDelay: 250,
+//             // setting the modal window gallery using the SimpleLightbox library and adding "alt" caption title on bottom with 250 ms delay
+//             let gallery = new SimpleLightbox(`.gallery a`, {
+//               captionsData: 'alt',
+//               captionDelay: 250,
+//             });
+//           });
+//         });
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   }
+//   fetchGaleryImages();
+// });
+
+window.addEventListener(
+  'scroll',
+  _.debounce(() => {
+    const scrolledTo = window.scrollY + window.innerHeight;
+
+    const isReachBottom = document.body.scrollHeight <= scrolledTo;
+
+    if (isReachBottom) {
+      page++;
+      galleryContainer.innerHTML = null;
+
+      const axiosOptions = {
+        params: {
+          key: apiKey,
+          q: searchText,
+          image_type: 'photo',
+          page: page,
+          per_page: perPageItems,
+          orientation: 'horizontal',
+          safesearch: true,
+        },
+      };
+
+      function fetchGaleryImages() {
+        axios
+          .get(`${API_URL_BASE}`, axiosOptions)
+          .then(result => {
+            const allImages = result.data.hits;
+            allImages.map(img => {
+              renderImages(img);
             });
+            // loadMoreBtn.style.visibility = 'visible';
+            // loadMoreBtn.disabled = false;
+            loader.style.visibility = 'visible';
+
+            // console.log(allImages);
+            if (allImages.length === 0) {
+              Notiflix.Notify.info(
+                "We're sorry, but you've reached the end of search results."
+              );
+              // loadMoreBtn.style.visibility = 'hidden';
+              // loadMoreBtn.disabled = true;
+              loader.style.visibility = 'hidden';
+            }
+            // getting the gallery"link" array by  selector
+            const link = document.querySelectorAll('a');
+            // console.log(link.length);
+
+            // getting each link and adding click event on each link
+            link.forEach(element => {
+              const elementImage = element.querySelector('img');
+              // console.log(elementImage.src);
+              // console.log(element.href);
+
+              element.addEventListener('click', ev => {
+                //   preventing link natural action
+                ev.preventDefault();
+
+                // changing the src image path on click event
+                elementImage.src = element.href;
+
+                // setting the modal window gallery using the SimpleLightbox library and adding "alt" caption title on bottom with 250 ms delay
+                let gallery = new SimpleLightbox(`.gallery a`, {
+                  captionsData: 'alt',
+                  captionDelay: 250,
+                });
+              });
+            });
+          })
+          .catch(err => {
+            console.log(err);
           });
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-  fetchGaleryImages();
-});
+      }
+      fetchGaleryImages();
+    }
+  }, 300)
+);
