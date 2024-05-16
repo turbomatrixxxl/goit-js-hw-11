@@ -18,13 +18,17 @@
     "url": "https://github.com/turbomatrixxxl/goit-js-hw-11/issues"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "infinite-scroll": "^4.0.1",
-    "loadash": "^1.0.0",
+    "lazyload": "^2.0.0-rc.2",
+    "lodash": "^4.17.21",
     "modern-normalize": "^1.1.0",
+    "notiflix": "^3.2.7",
     "simplelightbox": "^2.14.3"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
+    "buffer": "^6.0.3",
     "parcel": "^2.6.0",
     "parcel-reporter-clean-dist": "^1.0.4",
     "posthtml-include": "^1.7.4"
