@@ -18,6 +18,10 @@ const galleryContainer = document.querySelector('.gallery');
 // console.log(galleryContainer);
 
 const searchBtn = document.querySelector('button');
+searchBtn.disabled = true;
+input.addEventListener('input', () => {
+  searchBtn.disabled = false;
+});
 
 const loader = document.querySelector('.loader');
 loader.style.visibility = 'hidden';
@@ -95,6 +99,8 @@ const apiKey = '43897826-0f8632ff14c61d7f409caf77c';
 
 searchBtn.addEventListener('click', ev => {
   ev.preventDefault();
+  searchBtn.disabled = true;
+
   galleryContainer.innerHTML = null;
   // console.log(galleryContainer);
 
