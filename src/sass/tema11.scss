@@ -18,7 +18,7 @@ body {
 }
 
 .photo-card {
-  background-color: rgb(198, 218, 218);
+  // background-color: rgb(198, 218, 218);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,6 +41,7 @@ img {
 }
 
 .info {
+  width: 100%;
   height: fit-content;
   display: flex;
   flex-wrap: wrap;
