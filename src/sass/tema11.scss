@@ -39,6 +39,8 @@ img {
 .info {
   height: fit-content;
   display: flex;
+  flex-wrap: wrap;
+
   justify-content: space-between;
   gap: 5px;
   border: 1px solid transparent;
@@ -48,7 +50,6 @@ img {
 .info-item {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   gap: 3px;
   align-items: center;
   font-size: smaller;
